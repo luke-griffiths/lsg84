@@ -50,10 +50,55 @@ I trust that the reader can figure out what each of those states corresponds to.
 <img width="587" alt="Screen Shot 2022-12-12 at 10 53 19 PM" src="https://user-images.githubusercontent.com/71809396/207222544-6c3713f4-c1d8-432f-bb5d-44524cc8fcff.png">
 
 ### Landing Pads
+To keep track of landing pads, I used an nx2 array of fixed point numbers where n is the number of pads. To make the game playable forever, I used this code to continuously re-initialize the pad locations once they had disappeared from the bottom of the screen. 
+```
+/* Re-initializes pads somewhere above the dino (but not in the visible portion of the screen) if the pad has gone off the bottom of the screen */
+void update_pads(){
+  for (int i = 0; i < NUMPADS; i++){
+    if (fix2int(pads[i][1]) > SCREEN_HEIGHT){
+      pads[i][0] = int2fix(rand() % (SCREEN_WIDTH - PAD_WIDTH));
+      // distance between pads increases as height grows.. game gets harder
+      pads[i][1] = int2fix((rand() % (SCREEN_HEIGHT)) - SCREEN_HEIGHT - height / 100);
+    }
+  }
+}
+```
+This means that I only needed n = 20 to give me plenty of landing pads, and I used very little memory on the RP2040. 
 
 ### IMU
+To update the IMU, I used nearly the same code as lab 3; however, I no longer needed to trigger an interrupt that signaled an IMU read: I just read once per frame of the game (30 times per second). 
+```
+void updateIMU(){
+  mpu6050_read_raw(acceleration, gyro);
+  // Accelerometer angle (degrees - 15.16 fixed point)
+  accel_angle = multfix15(divfix(acceleration[0], acceleration[1]), oneeightyoverpi);
+  // Gyro angle delta (measurement times timestep) (15.16 fixed point)
+  gyro_angle_delta = multfix15(gyro[2], zeropt001);
+  complementary_angle = multfix15(complementary_angle - gyro_angle_delta, 35000) + multfix15(accel_angle, 200);
+}
+```
+What are those weird values ```35000``` and ```200``` in the last line of my complementary filter? Those are the trial-and-error determined weighting values for the gyroscope and accelerometer. Those values gave me a response to change in the IMU that was strong but not too sensitive, and made the game easy to play. 
+
+### Updating the Game
+I won't include a full code section here, but I think it's worthwhile to mention what exactly occurs 30 times per second. Pseudocode for my updateFrame() is below:
+```
+read the IMU
+update the landing pads
+erase the dinosaur and cannonballs from the VGA
+update dinosaur and cannonball positions with kinematic eqns
+if the dino is off the screen or there's a cannonball collision:
+  end the game
+if the dino is falling and lands on a pad:
+  move everything down for a specified number of frames
+redraw the dinosaur and cannonballs
+```
+Obviously that's a simplification, but that is *generally* the flow of the update function. It gets called 30 times per second, which means that all those functions *must* be completed in less than 1/30th of a second. 
+
+### Drawing
+I used a ton of drawing functions to draw a left-facing Ava, right-facing Ava, landing pad, and cannonball. All of these relied on the ```drawRect()``` function included in the VGA graphics library from Hunter. For text, I used the ```setCursor()```, ```setTextColor()```, ```setTextSize()```, and ```writeString()``` functions to write words to the monitor. 
 
 ### Threading & Concurrency
+
 
 ## Results
 Here's a video of the game in action.

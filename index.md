@@ -80,17 +80,19 @@ void updateIMU(){
 What are those weird values ```35000``` and ```200``` in the last line of my complementary filter? Those are the trial-and-error determined weighting values for the gyroscope and accelerometer. Those values gave me a response to change in the IMU that was strong but not too sensitive, and made the game easy to play. 
 
 ### Updating the Game
-I won't include a full code section here, but I think it's worthwhile to mention what exactly occurs 30 times per second. Pseudocode for my updateFrame() is below:
+I won't include a full code section here, but I think it's worthwhile to mention what exactly occurs 30 times per second. Pseudocode for my ```updateFrame()``` is below:
 ```
-read the IMU
-update the landing pads
-erase the dinosaur and cannonballs from the VGA
-update dinosaur and cannonball positions with kinematic eqns
-if the dino is off the screen or there's a cannonball collision:
-  end the game
-if the dino is falling and lands on a pad:
-  move everything down for a specified number of frames
-redraw the dinosaur and cannonballs
+updateFrame {
+  read the IMU
+  update the landing pads
+  erase the dinosaur and cannonballs from the VGA
+  update dinosaur and cannonball positions with kinematic eqns
+  if the dino is off the screen or there's a cannonball collision:
+    end the game
+  if the dino is falling and lands on a pad:
+    move everything down for a specified number of frames
+  redraw the dinosaur and cannonballs
+}
 ```
 Obviously that's a simplification, but that is *generally* the flow of the update function. It gets called 30 times per second, which means that all those functions *must* be completed in less than 1/30th of a second. 
 

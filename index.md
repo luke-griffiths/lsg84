@@ -5,10 +5,11 @@
 I created a joystick-based video game using an IMU, microcontroller, and VGA monitor. Why? Because who doesn't like old-fashioned, arcade-style video games. The game has basic features of an arcade game: a cool welcome screen, pixelated graphics, a leaderboard that keeps track of high scores, pause/resume functionality, and a joystick to control the main character. The goal: get as high as possible and avoid getting hit by cannonballs. 
 
 ## High Level Design
-Dino Jump is very similar to the Doodle Jump app, except the graphics are more reminiscent of a retro arcade game, and the main character is a cool dinosaur named Ava. 
+Dino Jump is heavily inspired by the Doodle Jump app, except the graphics are more reminiscent of a retro arcade game, and the main character is a cool dinosaur named Ava. 
 
+![IMG_7996](https://user-images.githubusercontent.com/71809396/207230842-d4444a76-e87b-4e85-be8b-4a7bdcb20986.png)
 
-
+To play the game, you enter your name on the keyboard and press enter. This name is stored so that your score can be added to the leaderboard, assuming you score well enough. The "joystick" is an IMU mounted on a hinge that allows the joystick to move around one axis. You have no control over Ava's vertical motion: she jumps when she lands on a pad, and she falls according to the laws of gravity. You do have control over her horizontal velocity, through the IMU. Tilting left gives her a velocity pointing to the left, and tilting right gives her a velocity to the right. The game continues until either a cannonball is hit or Ava misses a landing pad and falls off screen. During game play, the game can be paused and resumed. Once the game is over (or before a game is begun), the user can enter 'l' to see a leaderboard containing the names and scores of the top five players. 
 
 ## Program/Hardware Design
 ### Hardware
@@ -100,7 +101,7 @@ Obviously that's a simplification, but that is *generally* the flow of the updat
 I used a ton of drawing functions to draw a left-facing Ava, right-facing Ava, landing pad, and cannonball. All of these relied on the ```drawRect()``` function included in the VGA graphics library from Hunter. Since draw rect is almost down to the level of individual pixels, it means that my ```drawDino()``` function was over 100 lines of code.  For text, I used the ```setCursor()```, ```setTextColor()```, ```setTextSize()```, and ```writeString()``` functions to write words to the monitor. 
 
 ### Threading & Concurrency
-This program used two threads and two cores. In previous labs, the two cores had an approximately equal workload. For example, the boids simulation required that each core works on updating half of the boids flock, and one writes to the VGA while the other waits for user input. This meant that I needed to be careful about sharing resources. For this assignment, I only needed two threads: one to run the game, and one to handle user input. 
+This program used two threads and two cores. In previous labs, the two cores had an approximately equal workload. For example, the boids simulation required that each core works on updating half of the boids flock, and one writes to the VGA while the other handles user input. This meant that I needed to be careful about sharing resources. For this assignment, I only needed two threads: one to run the game, and one to handle user input. 
 
 <img width="588" alt="Screen Shot 2022-12-12 at 11 47 29 PM" src="https://user-images.githubusercontent.com/71809396/207229119-a48945e7-c1e1-45b0-bc78-b6db498be8b8.png">
 

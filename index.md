@@ -118,7 +118,7 @@ There are two main flaws with the current design:
 
 ## Conclusions
 Overall this project was a success. The game is very playable, it looks good, and working on it made me happy. In addition, I had plenty of "spare time" to do additional computations while maintaining 30fps. This means that
-1. my code is efficient
+1. my code is efficient (or, the RP2040 is a powerful microcontroller. Whichever.)
 2. I have the ability to add in cool features and the frame rate won't be affected
 
 One feature that I would have liked to add was sound effects. Most arcade games that I know of have funny sound effects, and it wouldn't have been too difficult to add a *boing* noise every time Ava jumped. Ultimately, like any software project, there is a tradeoff between deadlines and feature development. Unfortunately, the sound effect feature was a casualty of this tradeoff. 

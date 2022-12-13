@@ -51,8 +51,23 @@ I trust that the reader can figure out what each of those states corresponds to.
 
 ## Results
 
+Here's a video of the game in action
+
+https://youtu.be/TZojMDk_-_0
+
+There are two main flaws with the current design: 
+1. Flicker. I was unable to figure out what caused the dinosaur to occasionally flicker when it moves quickly. You can see this when the dinosaur jumps or falls quickly, and you can see it in the pads and dinosaur when the environment shifts down. 
+2. Bounding box collision detection. Since I detect collisions with pads (and cannonballs) via a bounding box drawn around the dinosaur, you can have the dinosaur's feet be in free space but the dinosaur is still "on a pad" since a line drawn down from the dinosaur's snout *would be* on the pad. In addition, when the dinosaur moves very fast (like when in free fall) it could move so fast in one frame that it goes right through a pad. This rarely happens, but is possible. The fix would be to "add air resistance" so the dinosaur would have a terminal velocity slow enough to never travel the distance of a pad in one frame. 
+
 ## Conclusions
 
+Overall this project was a success. The game is very playable, it looks good, and working on it made me happy. In addition, I had plenty of "spare time" to do additional computations while maintaining 30fps. This means that
+1. my code is efficient
+2. I have the ability to add in cool features and the frame rate won't be affected
+
+One feature that I would have liked to add was sound effects. Most arcade games that I know of have funny sound effects, and it wouldn't have been too difficult to add a *boing* noise every time Ava jumped. Ultimately, like any software project, there is a tradeoff between deadlines and feature development. Unfortunately, the sound effect feature was a casualty of this tradeoff. 
+
+As far as acknowledgements, nearly all the code written was my own. I did re-use my own complementary filter code for the IMU from Lab 3, and I used Hunter's VGA graphics library and several Pico hardware libraries for i2c and pio. Thank you to Hunter and Bruce for providing debugging suggestions and for giving me the knowledge necessary to complete this assignment!
 
 ## Appendix
 

@@ -94,13 +94,17 @@ updateFrame {
   redraw the dinosaur and cannonballs
 }
 ```
-Obviously that's a simplification, but that is *generally* the flow of the update function. It gets called 30 times per second, which means that all those functions *must* be completed in less than 1/30th of a second. 
+Obviously that's a simplification, but that is *generally* the flow of the update function. It gets called 30 times per second, which means that all those functions *must* be completed in less than 1/30th of a second. The frame rate is maintained by delaying the next call to ```updateFrame()``` by the amount of "spare time."
 
 ### Drawing
-I used a ton of drawing functions to draw a left-facing Ava, right-facing Ava, landing pad, and cannonball. All of these relied on the ```drawRect()``` function included in the VGA graphics library from Hunter. For text, I used the ```setCursor()```, ```setTextColor()```, ```setTextSize()```, and ```writeString()``` functions to write words to the monitor. 
+I used a ton of drawing functions to draw a left-facing Ava, right-facing Ava, landing pad, and cannonball. All of these relied on the ```drawRect()``` function included in the VGA graphics library from Hunter. Since draw rect is almost down to the level of individual pixels, it means that my ```drawDino()``` function was over 100 lines of code.  For text, I used the ```setCursor()```, ```setTextColor()```, ```setTextSize()```, and ```writeString()``` functions to write words to the monitor. 
 
 ### Threading & Concurrency
+This program used two threads and two cores. In previous labs, the two cores had an approximately equal workload. For example, the boids simulation required that each core works on updating half of the boids flock, and one writes to the VGA while the other waits for user input. This meant that I needed to be careful about sharing resources. For this assignment, I only needed two threads: one to run the game, and one to handle user input. 
 
+<img width="588" alt="Screen Shot 2022-12-12 at 11 47 29 PM" src="https://user-images.githubusercontent.com/71809396/207229119-a48945e7-c1e1-45b0-bc78-b6db498be8b8.png">
+
+This was a very easy division of labor because there were so few shared resources; however, it meant that core 1 was just sitting around idle for most of the time, polling for user input. If the game got complex enough that it required core 1 to do more work, I could replace the user input thread with a user input interrupt routine and use both cores to perform game updates, for example updating the dinosaur on one core and updating cannonballs on the other. 
 
 ## Results
 Here's a video of the game in action.
